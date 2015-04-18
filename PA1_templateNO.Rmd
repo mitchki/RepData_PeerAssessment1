@@ -1,0 +1,66 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+author: "Kimberley Mitchell"
+date: "April 16, 2015"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+```{r}
+
+activity <- read.csv(unzip("activity.zip"),stringsAsFactors=TRUE)
+activity$DATE <- as.Date(activity$date)
+boxplot(steps ~ date, data = activity, col = "red")
+
+boxplot(steps ~ interval, data = activity, col = "red")
+
+
+```
+
+
+## What is mean total number of steps taken per day?
+
+```{r}
+
+
+day <- split(activity,activity$date)
+daymeans <- sapply(day, function(x){
+    mean(x[,c("steps")],na.rm=TRUE)
+})
+
+hist(daymeans)
+
+
+summary(daymeans)[["Mean"]]
+
+summary(daymeans)[["Median"]]
+
+
+
+```
+The mean total number of steps per day is `r summary(daymeans)[["Mean"]] `
+
+## What is the average daily activity pattern?
+
+```{r}
+time <- split(activity,activity$interval)
+pattern <- sapply(time, function(x){
+    mean(x[,c("steps")],na.rm=TRUE)
+})
+
+plot((names(pattern)),pattern,type="l")
+
+```
+
+
+## Imputing missing values
+
+Missing values are imputed to be 0 steps for the interval.
+
+
+
+## Are there differences in activity patterns between weekdays and weekends?
