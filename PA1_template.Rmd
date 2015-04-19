@@ -84,6 +84,7 @@ newAct <- cbind(steps,activity[,2:5])
 
 hist(newAct$steps)
 ```  
+     
 Mean of total steps taken per day given the imputation of 0 for NA values of steps.
 ```{r}
 day <- split(newAct,newAct$date)
@@ -119,8 +120,18 @@ for (i in 1:length(newAct$dayofweek)) {
         }
 }
 newAct$weekend <- as.factor(newAct$weekend)
+library(data.table)
+dt.Act <- data.table(newAct)
+
+forplot <- dt.Act[,lapply(.SD,mean),by="interval,weekend", .SDcols=c("steps")]
 
 
 
-```  
+library(lattice)
+xyplot(steps~interval|factor(weekend),
+       type="l",data=forplot, layout=c(1,2),
+       lwd=3)
+```
+  
+  There does appear to be a difference in pattern between weekday and weekend activity. The biggest difference is that there is more activity in the early and mid-mornings on weekdays than on weekends, and more activity in midday on weekends.
   
